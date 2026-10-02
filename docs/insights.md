@@ -38,7 +38,7 @@ Batch 1 정책 분리 CV MAPE는 7.12%, Hold-out 12.72%, Batch 2 32.35%, Batch 3
 
 **해석 조건:** 점검 지연·조기 교체는 오차 방향에 따른 가능성이다. 실제 비용과 현장 교체 결과는 측정하지 않았다.
 
-근거: [results/cell_predictions.csv](../results/cell_predictions.csv), [results/evaluation_metrics.csv](../results/evaluation_metrics.csv) · 개발·검증 보고서 7~8쪽 · 모델링 7절의 배치별 오차
+근거: [results/cell_predictions.csv](../results/cell_predictions.csv), [results/evaluation_metrics.csv](../results/evaluation_metrics.csv) · 개발·검증 보고서 7–8쪽 · 모델링 7절의 배치별 오차
 
 ## I4. 입력 범위 검사만으로 확인하기 어려운 적용 영역
 
@@ -50,7 +50,7 @@ Batch 1 정책 분리 CV MAPE는 7.12%, Hold-out 12.72%, Batch 2 32.35%, Batch 3
 
 **해석 조건:** 실제 수명 구간은 사후 진단이다. 운영에서는 새 셀의 정답 수명을 미리 알 수 없고, 정책·구조·불확실성 등 관측 가능한 정보가 필요하다.
 
-근거: [results/lifetime_range_errors.csv](../results/lifetime_range_errors.csv), [results/cell_predictions.csv](../results/cell_predictions.csv) · 개발·검증 보고서 9~10쪽 · 모델링 8절의 적용 범위
+근거: [results/lifetime_range_errors.csv](../results/lifetime_range_errors.csv), [results/cell_predictions.csv](../results/cell_predictions.csv) · 개발·검증 보고서 9–10쪽 · 모델링 8절의 적용 범위
 
 Batch 2의 입력 범위 안 28셀은 평균 편향이 +152.09사이클이고 24셀에서 과대 예측이었다. 입력 범위를 벗어난 11셀도 따로 존재한다. 전체 배치를 범위 안이라고 해석하지 않는다. 실제 수명으로 나눈 단·장수명 구간은 평가 결과를 설명하는 사후 진단이며 신규 셀의 적용 허용 기준으로 사용할 수 없다.
 
@@ -92,7 +92,7 @@ Batch 2의 입력 범위 안 28셀은 평균 편향이 +152.09사이클이고 24
 ## 코드에서 근거 확인
 
 - [EDA 노트북](../notebooks/01_EDA.ipynb) → [피처 추출](../notebooks/02_feature_engineering.ipynb) → [모델링](../notebooks/03_modeling.ipynb)의 순서로 읽는다.
-- [모델링 노트북](../notebooks/03_modeling.ipynb): 5절 후보 비교, 7~9절 배치·범위·품질 진단, 12절 여섯 시사점 재계산.
+- [모델링 노트북](../notebooks/03_modeling.ipynb): 5절 후보 비교, 7–9절 배치·범위·품질 진단, 12절 여섯 시사점 재계산.
 - [시사점 계산 모듈](../src/insights.py): 결과 CSV에서 근거 수치를 계산하고 관찰·해석·판단·조건을 한 표로 반환.
 - [근거 표](../results/insight_evidence.csv): 여섯 발견과 원천 파일 경로를 보존.
 
