@@ -18,3 +18,5 @@
 검증 기록은 [`docs/validation/`](../docs/validation/)에 있다. 재실행 시 검증 JSON과 EDA 표·그림이 `results/` 아래 추가 생성될 수 있다. `results/eda/`는 Git에서 제외한다. 현재 점수에 맞춘 재튜닝과 새로운 독립 검증을 구분한다.
 
 품질 민감도의 입력 규칙은 [`data/processed/batch3_author_quality_rules.csv`](../data/processed/batch3_author_quality_rules.csv)를 사용한다. 결과 폴더에는 이 입력의 사본을 만들지 않고 민감도 집계만 저장한다.
+
+문헌 기반 확장 후보 M4·M5를 포함한 275설정·1375회 CV 결과는 `candidate_comparison.csv`와 `cv_folds.csv`에 저장한다. 기존 후보의 spec_id S000–S064를 유지했다. 확장 설정·이전 모델 및 점수·평가 열람 이력은 `protocol.json`에 기록했다.

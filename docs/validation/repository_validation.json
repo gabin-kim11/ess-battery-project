@@ -21,14 +21,17 @@
       "file": "notebooks/03_modeling.ipynb",
       "code_cells": 15,
       "errors": 0,
-      "stderr_cells": 1,
-      "duration_s": 17.59
+      "stderr_cells": 0,
+      "duration_s": 11.54,
+      "candidate_configs": 275,
+      "CV_fits": 1375,
+      "convergence_warnings": 0
     }
   ],
   "notebook_errors": 0,
   "CLI_train_finish_tests": "passed",
-  "unit_tests_passed": 7,
-  "scientific_values_unchanged": true,
+  "unit_tests_passed": 8,
+  "scientific_values_unchanged": false,
   "README_relative_links": "passed",
   "private_path_and_credential_scan": "passed",
   "raw_MAT_in_public_files": false,
@@ -80,5 +83,31 @@
     "PDF_visual_and_text_bounds": "passed all 12 pages",
     "README_lines": 151,
     "stderr_note": "Matplotlib font-cache initialization only"
+  },
+  "paper_extension_revision": {
+    "date": "2026-10-02",
+    "candidate_configs": 275,
+    "CV_fits": 1375,
+    "original_65_config_scores_match": true,
+    "selected_model_unchanged": true,
+    "all_129_cell_predictions_numerically_unchanged": true,
+    "protected_DAY1_files_byte_identical": [
+      "notebooks/01_EDA.ipynb",
+      "notebooks/02_feature_engineering.ipynb",
+      "reports/eda_and_model_strategy.pdf",
+      "data/processed/cells_and_features.csv"
+    ],
+    "independent_metric_recalculation": "passed",
+    "notebook_code_cells": 15,
+    "notebook_errors": 0,
+    "convergence_warnings": 0,
+    "unit_tests": 8,
+    "evaluation_scope": "Previously examined cohorts; follow-up only, not independent improvement confirmation",
+    "publication_file_count": 75,
+    "CLI_CSVs_numerically_match": 17,
+    "headless_chart_backend": "Agg; CLI finish passed",
+    "PDF_pages": 12,
+    "PDF_all_pages_visual_and_bounds": "passed",
+    "modeling_notebook_stderr_cells": 0
   }
 }

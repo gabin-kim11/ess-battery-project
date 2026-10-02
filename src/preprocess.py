@@ -4,13 +4,16 @@ from sklearn.model_selection import GroupShuffleSplit,GroupKFold
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge,ElasticNet
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.dummy import DummyRegressor
 from sklearn.compose import TransformedTargetRegressor
 BASE=['logvar_deltaQ','slope_QD','delta_IR','mean_Tavg','mean_chargetime']
 FEATURE_SETS={'single':['logvar_deltaQ'],'physical':BASE,'policy':BASE+['C1','SOC_switch','C2'],
  'current':[f for f in BASE if f!='mean_chargetime']+['current_rms_C','current_cv']}
+FEATURE_SETS.update({'delta_pair':['logvar_deltaQ','min_deltaQ'],
+ 'physical_delta':FEATURE_SETS['physical']+['min_deltaQ'],
+ 'current_delta':FEATURE_SETS['current']+['min_deltaQ']})
 SEED=42
 
 def validate_features(frame):
@@ -37,7 +40,11 @@ def make_model(spec):
     if spec['family']=='median':reg=DummyRegressor(strategy='median')
     elif spec['family']=='ridge':
         steps.append(('scaler',StandardScaler()));reg=Ridge(alpha=spec['alpha'])
-    else:reg=RandomForestRegressor(n_estimators=200,max_depth=spec['max_depth'],min_samples_leaf=spec['min_samples_leaf'],max_features=1.,random_state=SEED,n_jobs=1)
+    elif spec['family']=='elasticnet':
+        steps.append(('scaler',StandardScaler()))
+        reg=ElasticNet(alpha=spec['alpha'],l1_ratio=spec['l1_ratio'],max_iter=50000,tol=1e-6,selection='cyclic')
+    elif spec['family']=='forest':reg=RandomForestRegressor(n_estimators=200,max_depth=spec['max_depth'],min_samples_leaf=spec['min_samples_leaf'],max_features=1.,random_state=SEED,n_jobs=1)
+    else:raise ValueError(f"지원하지 않는 모델 계열: {spec['family']}")
     steps.append(('model',reg));model=Pipeline(steps)
     if spec['target']=='log10':model=TransformedTargetRegressor(regressor=model,func=np.log10,inverse_func=lambda a:10.**a)
     return model

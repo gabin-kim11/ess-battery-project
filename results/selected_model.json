@@ -10,9 +10,9 @@
   "features": [
     "logvar_deltaQ"
   ],
-  "best_CV_MAPE_pct": 7.1154183510654345,
-  "one_SE_threshold_pct": 8.456531305471419,
-  "selected_CV_MAPE_pct": 7.1154183510654345,
+  "best_CV_MAPE_pct": 7.115418351065432,
+  "one_SE_threshold_pct": 8.456531305471415,
+  "selected_CV_MAPE_pct": 7.115418351065432,
   "selected_CV_sd": 2.998819731557356,
   "selection_basis": "Batch 1 development CV only",
   "lock_stage": "before Hold-out and Batch 2/3 predictions"

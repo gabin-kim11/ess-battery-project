@@ -1,4 +1,4 @@
-"""Ridge 최종 학습값을 실행 가능한 JSON으로 저장한다."""
+"""정규화 선형 모델의 최종 학습값을 실행 가능한 JSON으로 저장한다."""
 from pathlib import Path
 import argparse,json
 import numpy as np
@@ -10,7 +10,7 @@ def export_model(features,locked,out):
     train=frame[frame.batch==1]
     model=make_model(spec).fit(train[cols],train.cycle_life)
     pipe=model.regressor_ if hasattr(model,'regressor_') else model
-    if spec['family']!='ridge':raise ValueError('현재 JSON 내보내기는 Ridge 모델에 적용합니다.')
+    if spec['family'] not in ['ridge','elasticnet']:raise ValueError('JSON 내보내기는 Ridge·ElasticNet 선형 모델에 적용합니다.')
     artifact={'format':'ridge-json-v1','spec':spec,'features':cols,'target':spec['target'],
       'imputer':pipe.named_steps['imputer'].statistics_.tolist(),
       'mean':pipe.named_steps['scaler'].mean_.tolist(),'scale':pipe.named_steps['scaler'].scale_.tolist(),

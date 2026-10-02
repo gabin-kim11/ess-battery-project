@@ -15,8 +15,8 @@
     {
       "file": "batch1_candidates.png",
       "family": "bar",
-      "rows": 4,
-      "takeaway": "single Ridge has minimum grouped-CV MAPE; uncertainty limits fine distinctions"
+      "rows": 6,
+      "takeaway": "single Ridge has minimum grouped-CV MAPE after EDA-grounded Delta-Q/ElasticNet extension; uncertainty limits fine distinctions"
     },
     {
       "file": "batch1_prediction.png",

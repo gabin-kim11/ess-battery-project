@@ -3,6 +3,8 @@ from pathlib import Path
 import json
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from .preprocess import make_model,predict_positive
 BLUE='#3569a6';INK='#25303a';GREY='#b5bbc3'
@@ -16,10 +18,11 @@ def build_charts(features,cv,locked,pred,out):
  fig,ax=plt.subplots(figsize=(9,3.3));x=np.arange(len(best))
  ax.bar(x,best.CV_MAPE_pct,color=BLUE,edgecolor=INK,width=.58)
  ax.errorbar(x,best.CV_MAPE_pct,yerr=best.CV_MAPE_sd,fmt='none',ecolor=INK,capsize=5)
- ax.set_xticks(x, ['M0 Median','M1 Single Ridge','M2 Multi Ridge','M3 Random Forest']);ax.set_ylim(0,35)
+ labels={'M0':'M0\nMedian','M1':'M1\nSingle Ridge','M2':'M2\nMulti Ridge','M3':'M3\nRandom Forest','M4':'M4\nDelta-Q Ridge','M5':'M5\nElasticNet'}
+ ax.set_xticks(x,[labels[k] for k in best.candidate]);ax.set_ylim(0,35)
  ax.set_ylabel('MAPE (%)');ax.set_title('Batch 1 | Candidate cross-validation MAPE\n35 development cells, 5 policy groups folds; error bars = fold SD',loc='left',fontsize=11)
  for i,r in enumerate(best.itertuples()):ax.text(i,r.CV_MAPE_pct+r.CV_MAPE_sd+.7,f'{r.CV_MAPE_pct:.2f}%',ha='center')
- save(fig,out/'batch1_candidates.png');contract['charts'].append({'file':'batch1_candidates.png','family':'bar','rows':4,'takeaway':'single Ridge has minimum grouped-CV MAPE; uncertainty limits fine distinctions'})
+ save(fig,out/'batch1_candidates.png');contract['charts'].append({'file':'batch1_candidates.png','family':'bar','rows':len(best),'takeaway':'single Ridge has minimum grouped-CV MAPE after EDA-grounded Delta-Q/ElasticNet extension; uncertainty limits fine distinctions'})
  for b in [1,2,3]:
   g=pred[pred.batch==b].copy();fig,ax=plt.subplots(figsize=(8.5,4.3))
   if b==1:

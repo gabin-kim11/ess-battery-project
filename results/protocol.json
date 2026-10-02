@@ -7,12 +7,14 @@
   "holdout": "Batch 1 GroupShuffleSplit by charging_policy, test_size=0.2",
   "cv": "5-fold GroupKFold within development cells only",
   "primary_selection_metric": "unweighted mean of fold MAPE (%)",
+  "metric_rationale": "MAPE chosen for relative error across lifetime scales; design-stage MAE retained for absolute-cycle interpretation",
+  "feature_screening_basis": "DAY1-derived inputs only; compare correlated logvar_deltaQ and min_deltaQ jointly, then sensor/current bundles; no additional observation window",
   "secondary_metrics": [
     "MAE",
     "fold MAPE standard deviation",
     "overprediction"
   ],
-  "selection_rule": "minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer Ridge to Random Forest within eligible families, then minimum mean within family",
+  "selection_rule": "minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer regularized linear families (Ridge and ElasticNet equally) to Random Forest, then minimum mean",
   "targets": [
     "raw",
     "log10"
@@ -33,6 +35,55 @@
     6
   ],
   "rf_n_estimators": 200,
+  "extension_feature_sets": [
+    "delta_pair",
+    "physical_delta",
+    "current_delta"
+  ],
+  "elasticnet_feature_sets": [
+    "physical",
+    "policy",
+    "current",
+    "delta_pair",
+    "physical_delta",
+    "current_delta"
+  ],
+  "elasticnet_alpha": {
+    "raw": [
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "log10": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0
+    ]
+  },
+  "elasticnet_l1_ratio": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "extension_rationale": "Severson et al. 2019 elastic-net/log-lifetime framework and Delta-Q minimum; model family added to address DAY1 multicollinearity. Raw minimum retained from existing EDA, not claimed exact paper replication.",
+  "previous_selected_model": {
+    "candidate": "M1",
+    "family": "ridge",
+    "features": "single",
+    "target": "raw",
+    "alpha": 1.0
+  },
+  "previous_MAPE_pct": {
+    "Train_B1_CV": 7.1154183510654345,
+    "Valid_B1_holdout": 12.721933012703104,
+    "Test_B2": 32.346748844624756,
+    "Test_B3": 12.735665374786562
+  },
+  "paper_reference": "https://www.nature.com/articles/s41560-019-0356-8",
   "feature_sets": {
     "single": [
       "logvar_deltaQ"
@@ -61,13 +112,32 @@
       "mean_Tavg",
       "current_rms_C",
       "current_cv"
+    ],
+    "delta_pair": [
+      "logvar_deltaQ",
+      "min_deltaQ"
+    ],
+    "physical_delta": [
+      "logvar_deltaQ",
+      "slope_QD",
+      "delta_IR",
+      "mean_Tavg",
+      "mean_chargetime",
+      "min_deltaQ"
+    ],
+    "current_delta": [
+      "logvar_deltaQ",
+      "slope_QD",
+      "delta_IR",
+      "mean_Tavg",
+      "current_rms_C",
+      "current_cv",
+      "min_deltaQ"
     ]
   },
   "external_evaluation": "selected config only; refit all Batch 1; Batch 2 mandatory, Batch 3 separate",
   "gap_formula": "literal signed A-B; negative gaps mean an increased MAPE in B",
   "paper_target_MAPE_pct": 9.1,
-  "prior_access": "Exploratory analysis examined all batches; earlier exploratory scores exist. Current protocol frozen before new external predictions; this is not a pristine unseen test.",
-  "label_quality": "all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter",
-  "metric_rationale": "MAPE chosen for relative error across lifetime scales; design-stage MAE retained for absolute-cycle interpretation",
-  "feature_screening_basis": "logvar_deltaQ represents correlated Delta-Q summaries; min_deltaQ remains a separate development hypothesis"
+  "prior_access": "All-batch EDA and earlier Hold-out/Batch 2/3 scores examined, including prior final results. Extended grid fixed before rerun, selection uses Batch 1 development only. Reused evaluation cohorts are follow-up comparisons, not independent confirmation.",
+  "label_quality": "all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter"
 }

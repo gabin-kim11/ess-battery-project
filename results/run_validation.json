@@ -9,8 +9,19 @@
     "2": 39,
     "3": 44
   },
-  "candidate_configs": 65,
-  "CV_fits": 325,
+  "candidate_configs": 275,
+  "CV_fits": 1375,
   "selected_before_external_prediction": true,
-  "evaluation_scope": "conditional external validation after prior all-batch EDA, not pristine untouched external validation"
+  "environment": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "h5py": "3.16.0",
+    "matplotlib": "3.11.2",
+    "nbformat": "5.11.1",
+    "nbclient": "0.11.0"
+  },
+  "evaluation_scope": "follow-up comparison on previously examined Hold-out/Batch 2/3; independent improvement confirmation requires a new cohort"
 }

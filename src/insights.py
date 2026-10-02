@@ -32,14 +32,14 @@ def build_insight_evidence(features, predictions, comparison, quality):
         '중심화는 배치 수준 평균을 구분하는 진단이며 운전 조건의 인과 효과를 제거하는 실험이 아니다.',
         'data/processed/cells_and_features.csv')
 
-    m1, m2, m3 = (best.loc[k, 'CV_MAPE_pct'] for k in ['M1', 'M2', 'M3'])
+    m1, m2, m3, m4, m5 = (best.loc[k, 'CV_MAPE_pct'] for k in ['M1', 'M2', 'M3','M4','M5'])
     contribution = ('추가 센서 묶음은 평균 오차를 개선하지 못했다.' if m2 >= m1
                     else '추가 센서 묶음에서 평균 오차 개선이 관찰됐다.')
     add('I2', '센서 추가의 기여와 모델 복잡도의 구분',
-        f'M1 단일 Ridge {m1:.2f}%, M2 다변량 Ridge {m2:.2f}%, M3 RF {m3:.2f}%; '
+        f'M1 단일 Ridge {m1:.2f}%, M2 다변량 Ridge {m2:.2f}%, M3 RF {m3:.2f}%, M4 ΔQ 확장 Ridge {m4:.2f}%, M5 ElasticNet {m5:.2f}%; '
         f"M2 폴드 SD {best.loc['M2','CV_MAPE_sd']:.2f}%p, M1 {best.loc['M1','CV_MAPE_sd']:.2f}%p",
-        contribution + ' 평균 오차와 폴드 변동성은 별도 판단 근거다.',
-        '추가 센서 수집·비선형 모델 도입은 같은 분할에서의 증분 가치로 판단한다. 낮은 M2 변동성은 추가 표본에서 재검토한다.',
+        contribution + ' ΔQ 최솟값의 추가와 ElasticNet도 단일 기준보다 평균 오차를 낮추지 못했다. 높은 상관은 피처 중복의 단서이며 증분 가치는 실제 검증으로 판단한다.',
+        '단일 ΔQ Ridge를 유지한다. 추가 센서 수집·비선형 모델 도입은 같은 분할에서의 증분 가치로 판단한다. 낮은 M2 변동성은 추가 표본에서 재검토한다.',
         '개발 35셀의 조건부 비교다. 작은 성능 차이가 통계적으로 유의하거나 다른 배치에서도 유지된다고 단정하지 않는다.',
         'results/candidate_comparison.csv')
 

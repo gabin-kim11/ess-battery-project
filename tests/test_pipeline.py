@@ -1,10 +1,12 @@
 """실제 누수와 시간 범위를 검증하는 단위 테스트."""
-import unittest,json
+import unittest,json,tempfile
 from pathlib import Path
 import numpy as np
 import pandas as pd
 from src.preprocess import FEATURE_SETS,split_development,make_model,metrics
 from src.features import charge_pattern,validate_feature_snapshot
+from src.artifact import export_model,predict_artifact
+from src.preprocess import predict_positive
 class PipelineChecks(unittest.TestCase):
  def setUp(self):self.frame=pd.read_csv(Path(__file__).resolve().parents[1]/'data/processed/cells_and_features.csv')
  def test_no_policy_overlap(self):
@@ -39,4 +41,15 @@ class PipelineChecks(unittest.TestCase):
   manifest=json.loads((Path(__file__).resolve().parents[1]/'docs/validation/analysis_validation.json').read_text())['feature_snapshot']
   validate_feature_snapshot(self.frame.sample(frac=1,random_state=42),manifest)
   with self.assertRaises(ValueError):validate_feature_snapshot(self.frame.iloc[1:],manifest)
+ def test_elasticnet_export_matches_pipeline_for_both_targets(self):
+  # 모델 직렬화는 타깃 역변환과 피처 순서를 그대로 보존해야 한다.
+  cols=FEATURE_SETS['delta_pair']
+  train=self.frame[self.frame.batch==1];test=self.frame[self.frame.batch==2].copy()
+  test.loc[test.index[0],'min_deltaQ']=np.nan
+  for target,alpha in [('raw',.01),('log10',.001)]:
+   with self.subTest(target=target),tempfile.TemporaryDirectory() as directory:
+    spec={'family':'elasticnet','target':target,'alpha':alpha,'l1_ratio':.5,'features':'delta_pair'}
+    artifact=export_model(self.frame,{'spec':spec,'features':cols},directory)
+    model=make_model(spec).fit(train[cols],train.cycle_life)
+    np.testing.assert_allclose(predict_artifact(test,artifact),predict_positive(model,test[cols]),rtol=1e-12,atol=1e-9)
 if __name__=='__main__':unittest.main()

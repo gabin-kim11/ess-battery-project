@@ -1,10 +1,11 @@
 """Batch 1에서 후보를 고정한 뒤 Hold-out, Batch 2, Batch 3을 평가한다."""
 from pathlib import Path
 from itertools import product
-import argparse,json,platform,importlib.metadata
+import argparse,json,platform,importlib.metadata,warnings
 import numpy as np
 import pandas as pd
 from sklearn.inspection import permutation_importance
+from sklearn.exceptions import ConvergenceWarning
 from .preprocess import FEATURE_SETS,SEED,validate_features,split_development,make_model,predict_positive,metrics
 PROTOCOL={'seed':SEED,'task':'regression','target':'recorded cycle_life (cycles)',
  'feature_cycle_start':2,'feature_cycle_end':100,
@@ -12,15 +13,23 @@ PROTOCOL={'seed':SEED,'task':'regression','target':'recorded cycle_life (cycles)
  'cv':'5-fold GroupKFold within development cells only',
  'primary_selection_metric':'unweighted mean of fold MAPE (%)',
  'metric_rationale':'MAPE chosen for relative error across lifetime scales; design-stage MAE retained for absolute-cycle interpretation',
- 'feature_screening_basis':'logvar_deltaQ represents correlated Delta-Q summaries; min_deltaQ remains a separate development hypothesis',
+ 'feature_screening_basis':'DAY1-derived inputs only; compare correlated logvar_deltaQ and min_deltaQ jointly, then sensor/current bundles; no additional observation window',
  'secondary_metrics':['MAE','fold MAPE standard deviation','overprediction'],
- 'selection_rule':'minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer Ridge to Random Forest within eligible families, then minimum mean within family',
+ 'selection_rule':'minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer regularized linear families (Ridge and ElasticNet equally) to Random Forest, then minimum mean',
  'targets':['raw','log10'],'ridge_alpha':[.01,.1,1.,10.,100.],
  'rf_max_depth':[2,4],'rf_min_samples_leaf':[3,6],'rf_n_estimators':200,
+ 'extension_feature_sets':['delta_pair','physical_delta','current_delta'],
+ 'elasticnet_feature_sets':['physical','policy','current','delta_pair','physical_delta','current_delta'],
+ 'elasticnet_alpha':{'raw':[.01,.1,1.,10.,100.],'log10':[.0001,.001,.01,.1,1.]},
+ 'elasticnet_l1_ratio':[.1,.5,.9],
+ 'extension_rationale':'Severson et al. 2019 elastic-net/log-lifetime framework and Delta-Q minimum; model family added to address DAY1 multicollinearity. Raw minimum retained from existing EDA, not claimed exact paper replication.',
+ 'previous_selected_model':{'candidate':'M1','family':'ridge','features':'single','target':'raw','alpha':1.},
+ 'previous_MAPE_pct':{'Train_B1_CV':7.1154183510654345,'Valid_B1_holdout':12.721933012703104,'Test_B2':32.346748844624756,'Test_B3':12.735665374786562},
+ 'paper_reference':'https://www.nature.com/articles/s41560-019-0356-8',
  'feature_sets':FEATURE_SETS,'external_evaluation':'selected config only; refit all Batch 1; Batch 2 mandatory, Batch 3 separate',
  'gap_formula':'literal signed A-B; negative gaps mean an increased MAPE in B',
  'paper_target_MAPE_pct':9.1,
- 'prior_access':'Exploratory analysis examined all batches; earlier exploratory scores exist. Current protocol frozen before new external predictions; this is not a pristine unseen test.',
+ 'prior_access':'All-batch EDA and earlier Hold-out/Batch 2/3 scores examined, including prior final results. Extended grid fixed before rerun, selection uses Batch 1 development only. Reused evaluation cohorts are follow-up comparisons, not independent confirmation.',
  'label_quality':'all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter'}
 
 def dump_json(path,obj):Path(path).write_text(json.dumps(obj,ensure_ascii=False,indent=2,default=str),encoding='utf-8')
@@ -33,6 +42,11 @@ def candidate_specs():
         specs.append({'candidate':'M2','family':'ridge','features':feature,'target':target,'alpha':alpha})
     for feature,target,depth,leaf in product(['physical','policy','current'],PROTOCOL['targets'],PROTOCOL['rf_max_depth'],PROTOCOL['rf_min_samples_leaf']):
         specs.append({'candidate':'M3','family':'forest','features':feature,'target':target,'max_depth':depth,'min_samples_leaf':leaf})
+    for feature,target,alpha in product(PROTOCOL['extension_feature_sets'],PROTOCOL['targets'],PROTOCOL['ridge_alpha']):
+        specs.append({'candidate':'M4','family':'ridge','features':feature,'target':target,'alpha':alpha})
+    for feature,target in product(PROTOCOL['elasticnet_feature_sets'],PROTOCOL['targets']):
+        for alpha,l1_ratio in product(PROTOCOL['elasticnet_alpha'][target],PROTOCOL['elasticnet_l1_ratio']):
+            specs.append({'candidate':'M5','family':'elasticnet','features':feature,'target':target,'alpha':alpha,'l1_ratio':l1_ratio})
     return [{'spec_id':f'S{i:03}',**s} for i,s in enumerate(specs)]
 
 def compare_candidates(dev,folds,out):
@@ -40,7 +54,10 @@ def compare_candidates(dev,folds,out):
     for spec in candidate_specs():
         cols=FEATURE_SETS[spec['features']];scores=[];mae=[]
         for fold,(ti,vi) in enumerate(folds,1):
-            model=make_model(spec);model.fit(dev.iloc[ti][cols],dev.iloc[ti].cycle_life)
+            model=make_model(spec)
+            with warnings.catch_warnings():
+                warnings.simplefilter('error',ConvergenceWarning)
+                model.fit(dev.iloc[ti][cols],dev.iloc[ti].cycle_life)
             pred=predict_positive(model,dev.iloc[vi][cols]);score=metrics(dev.iloc[vi].cycle_life,pred)
             scores.append(score['MAPE_pct']);mae.append(score['MAE_cycles'])
             fold_records.append({'spec_id':spec['spec_id'],'candidate':spec['candidate'],'fold':fold,**score})
@@ -48,7 +65,7 @@ def compare_candidates(dev,folds,out):
         records.append({**spec,'CV_MAPE_pct':np.mean(scores),'CV_MAPE_sd':np.std(scores,ddof=1),'CV_MAE_cycles':np.mean(mae),'feature_n':len(cols)})
     cv=pd.DataFrame(records).sort_values(['CV_MAPE_pct','CV_MAE_cycles','spec_id']).reset_index(drop=True)
     best=cv.iloc[0];threshold=best.CV_MAPE_pct+best.CV_MAPE_sd/np.sqrt(5)
-    eligible=cv[cv.CV_MAPE_pct<=threshold].copy();eligible['priority']=eligible.family.map({'ridge':0,'forest':1,'median':2})
+    eligible=cv[cv.CV_MAPE_pct<=threshold].copy();eligible['priority']=eligible.family.map({'ridge':0,'elasticnet':0,'forest':1,'median':2})
     selected=eligible.sort_values(['priority','CV_MAPE_pct','CV_MAE_cycles','spec_id']).iloc[0]
     spec=next(s for s in candidate_specs() if s['spec_id']==selected.spec_id)
     cv['selected']=cv.spec_id==spec['spec_id'];cv['within_one_SE']=cv.CV_MAPE_pct<=threshold
@@ -102,7 +119,7 @@ def evaluate_locked(frame,dev,hold,cv,oof,locked,out):
     score=dict(zip(performance.role,performance.MAPE_pct))
     a=score['Train (Batch 1 CV)'];v=score['Valid (Batch 1 Hold-out)'];b2=score['Test (Batch 2)'];b3=score['Test (Batch 3)']
     reporting=pd.DataFrame([
-      ('Train (Batch 1 CV)',a,'%', '폴드 MAPE 단순 평균'),('Valid (Batch 1 Hold-out)',v,'%', '정책 단위 Hold-out'),('Test (Batch 2)',b2,'%', '고정 모델 최종 평가'),
+      ('Train (Batch 1 CV)',a,'%', '폴드 MAPE 단순 평균'),('Valid (Batch 1 Hold-out)',v,'%', '정책 단위 Hold-out'),('Test (Batch 2)',b2,'%', '고정 모델 후속 평가; 기존 열람 집단'),
       ('Gap (Train-Valid)',a-v,'%p','Train - Valid; 음수는 Valid 오차 증가'),('Gap (Valid-Test)',v-b2,'%p','Valid - Batch 2; 음수는 외부 오차 증가'),
       ('Gap (Target-Test)',9.1-b2,'%p','9.1 - Batch 2; 음수는 논문 기준 미달'),('Test (Batch 3)',b3,'%', '별도 추가 검증'),
       ('Gap (Batch2-Batch3)',b2-b3,'%p','Batch 2 - Batch 3'),('Gap (Target-Test, Batch 3)',9.1-b3,'%p','9.1 - Batch 3')],columns=['구분','MAPE (%) 또는 Gap (%p)','unit','비고'])
@@ -125,7 +142,7 @@ def evaluate_locked(frame,dev,hold,cv,oof,locked,out):
     importance=permutation_importance(dev_model,hold[cols],hold.cycle_life,scoring='neg_mean_absolute_percentage_error',n_repeats=50,random_state=SEED,n_jobs=1)
     pd.DataFrame({'feature':cols,'MAPE_increase_pp':importance.importances_mean*100,'SD_pp':importance.importances_std*100}).sort_values('MAPE_increase_pp',ascending=False).to_csv(out/'holdout_permutation_importance.csv',index=False)
     pipe=final_model.regressor_ if hasattr(final_model,'regressor_') else final_model
-    if spec['family']=='ridge':
+    if spec['family'] in ['ridge','elasticnet']:
         pd.DataFrame({'feature':cols,'standardized_coefficient':pipe.named_steps['model'].coef_}).to_csv(out/'model_coefficients.csv',index=False)
     elif spec['family']=='forest':
         pd.DataFrame({'feature':cols,'impurity_importance':pipe.named_steps['model'].feature_importances_}).to_csv(out/'model_coefficients.csv',index=False)
@@ -147,10 +164,10 @@ def run(frame,out):
     print('개발/검증/Batch 2/Batch 3:',len(dev),len(hold),int((frame.batch==2).sum()),int((frame.batch==3).sum()),flush=True)
     cv,oof,locked=compare_candidates(dev,folds,out)
     pred,perf,report=evaluate_locked(frame,dev,hold,cv,oof,locked,out)
-    dump_json(out/'environment.json',{'python':platform.python_version(),**{p:importlib.metadata.version(p) for p in ['numpy','pandas','scipy','scikit-learn','h5py','matplotlib','nbformat','nbclient']}})
+    environment={'python':platform.python_version(),**{p:importlib.metadata.version(p) for p in ['numpy','pandas','scipy','scikit-learn','h5py','matplotlib','nbformat','nbclient']}}
     dump_json(out/'run_validation.json',{'unique_cells':True,'holdout_policy_overlap':0,'CV_policy_overlap':0,'feature_cycle_max':100,'future_metadata_in_input':False,
-      'cohort_counts':frame.batch.value_counts().sort_index().to_dict(),'candidate_configs':len(cv),'CV_fits':len(cv)*5,'selected_before_external_prediction':True,
-      'evaluation_scope':'conditional external validation after prior all-batch EDA, not pristine untouched external validation'})
+      'cohort_counts':frame.batch.value_counts().sort_index().to_dict(),'candidate_configs':len(cv),'CV_fits':len(cv)*5,'selected_before_external_prediction':True,'environment':environment,
+      'evaluation_scope':'follow-up comparison on previously examined Hold-out/Batch 2/3; independent improvement confirmation requires a new cohort'})
     return cv,locked,pred,perf,report
 
 def main():
