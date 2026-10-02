@@ -1,7 +1,7 @@
 """배치별 EDA와 일치하는 MAT 피처 추출. 모델 입력은 cycle 2..100과 정책이다.
 전체 궤적 메타데이터는 진단에만 사용한다. 원본에 쓰지 않는다."""
 from pathlib import Path
-import argparse,re
+import argparse,re,hashlib,json
 import h5py
 import numpy as np
 import pandas as pd
@@ -10,6 +10,36 @@ NOMINAL_AH=1.1
 EOL_NEAR_AH=.885
 QD_UPPER_AH=1.5
 EARLY_START,EARLY_END=2,100
+
+def feature_fingerprint(frame, significant_digits=10):
+    """셀 순서를 정렬하고 유효 숫자를 정규화한 재현 검증 지문.
+
+    CSV 읽기·저장의 미세한 부동소수점 차이를 구분하지 않는다.
+    10자리 정규화는 오차 허용 구간 검정과는 다른 규칙이다.
+    """
+    if 'cell_id' not in frame or not frame.cell_id.is_unique:
+        raise ValueError('피처 지문에는 고유한 cell_id가 필요합니다.')
+    ordered = frame.sort_values('cell_id')
+    numeric = [pd.api.types.is_numeric_dtype(ordered[c]) for c in ordered.columns]
+    rows = []
+    for row in ordered.itertuples(index=False, name=None):
+        rows.append([
+            None if pd.isna(value) else
+            format(float(value), f'.{significant_digits}g') if is_numeric else str(value)
+            for value, is_numeric in zip(row, numeric)
+        ])
+    payload = json.dumps({'columns': list(ordered.columns), 'rows': rows},
+                         ensure_ascii=False, separators=(',', ':'))
+    return hashlib.sha256(payload.encode('utf-8')).hexdigest()
+
+def validate_feature_snapshot(frame, snapshot):
+    """별도 기준 CSV 없이 저장된 스키마·행 수·수치 지문을 검증한다."""
+    if len(frame) != snapshot['rows'] or list(frame.columns) != snapshot['columns']:
+        raise ValueError('기준 피처의 행 수 또는 열 구성이 달라졌습니다.')
+    fingerprint = feature_fingerprint(frame, snapshot['numeric_significant_digits'])
+    if fingerprint != snapshot['fingerprint_sha256']:
+        raise ValueError('초기 피처 값이 기준 지문과 다릅니다. 추출 조건과 원본을 확인하세요.')
+    return fingerprint
 
 def vector(dataset):
     return np.asarray(dataset[()], dtype=float).reshape(-1)

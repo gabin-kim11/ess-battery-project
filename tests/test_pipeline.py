@@ -1,10 +1,10 @@
 """실제 누수와 시간 범위를 검증하는 단위 테스트."""
-import unittest
+import unittest,json
 from pathlib import Path
 import numpy as np
 import pandas as pd
 from src.preprocess import FEATURE_SETS,split_development,make_model,metrics
-from src.features import charge_pattern
+from src.features import charge_pattern,validate_feature_snapshot
 class PipelineChecks(unittest.TestCase):
  def setUp(self):self.frame=pd.read_csv(Path(__file__).resolve().parents[1]/'data/processed/cells_and_features.csv')
  def test_no_policy_overlap(self):
@@ -31,4 +31,12 @@ class PipelineChecks(unittest.TestCase):
  def test_metric_units(self):
   score=metrics([100.,200.],[110.,180.])
   self.assertAlmostEqual(score['MAPE_pct'],10.);self.assertAlmostEqual(score['MAE_cycles'],15.)
+ def test_feature_snapshot_detects_data_change(self):
+  manifest=json.loads((Path(__file__).resolve().parents[1]/'docs/validation/analysis_validation.json').read_text())['feature_snapshot']
+  altered=self.frame.copy();altered.loc[0,'logvar_deltaQ']+=.01
+  with self.assertRaises(ValueError):validate_feature_snapshot(altered,manifest)
+ def test_feature_snapshot_allows_row_reordering(self):
+  manifest=json.loads((Path(__file__).resolve().parents[1]/'docs/validation/analysis_validation.json').read_text())['feature_snapshot']
+  validate_feature_snapshot(self.frame.sample(frac=1,random_state=42),manifest)
+  with self.assertRaises(ValueError):validate_feature_snapshot(self.frame.iloc[1:],manifest)
 if __name__=='__main__':unittest.main()

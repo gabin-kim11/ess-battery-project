@@ -8,30 +8,61 @@
       "code_cells": 69,
       "errors": 0,
       "stderr_cells": 1,
-      "duration_s": 23.2
+      "duration_s": 22.94
     },
     {
       "file": "notebooks/02_feature_engineering.ipynb",
       "code_cells": 3,
       "errors": 0,
       "stderr_cells": 0,
-      "duration_s": 9.47
+      "duration_s": 7.78
     },
     {
       "file": "notebooks/03_modeling.ipynb",
       "code_cells": 15,
       "errors": 0,
       "stderr_cells": 0,
-      "duration_s": 9.44
+      "duration_s": 9.38
     }
   ],
   "notebook_errors": 0,
   "CLI_train_finish_tests": "passed",
-  "unit_tests_passed": 5,
+  "unit_tests_passed": 7,
   "scientific_values_unchanged": true,
   "README_relative_links": "passed",
   "private_path_and_credential_scan": "passed",
   "raw_MAT_in_public_files": false,
   "same_runtime_location_independence": true,
-  "kernel_shutdown_note": "Sandbox process-enumeration warning is separate from notebook cell errors."
+  "kernel_shutdown_note": "Sandbox process-enumeration warning is separate from notebook cell errors.",
+  "tracked_files": 75,
+  "duplicate_nonempty_file_groups": 0,
+  "retired_duplicates_regenerated": false,
+  "scientific_csvs_compared": [
+    "data/processed/batch3_author_quality_rules.csv",
+    "data/processed/cells_and_features.csv",
+    "data/processed/current_quality.csv",
+    "data/processed/current_rejected.csv",
+    "data/processed/source_manifest.csv",
+    "results/batch3_quality_sensitivity.csv",
+    "results/candidate_comparison.csv",
+    "results/candidate_oof_predictions.csv",
+    "results/cell_predictions.csv",
+    "results/cohort_profile.csv",
+    "results/cv_folds.csv",
+    "results/error_strata.csv",
+    "results/evaluation_metrics.csv",
+    "results/external_baseline.csv",
+    "results/holdout_permutation_importance.csv",
+    "results/insight_evidence.csv",
+    "results/lifetime_range_errors.csv",
+    "results/model_coefficients.csv",
+    "results/model_performance.csv",
+    "results/policy_errors.csv",
+    "results/split_manifest.csv",
+    "results/worst_cells.csv"
+  ],
+  "report_PDF_bytes_unchanged": true,
+  "original_feature_CSV_bytes_unchanged": true,
+  "feature_snapshot_check": "passed for raw extraction and CSV reload",
+  "feature_snapshot_negative_tests": "changed value and missing row rejected; row reordering accepted"
 }

@@ -16,3 +16,7 @@ results/eda/
 .env.*
 !.env.example
 .DS_Store
+
+# Retired duplicate files from older checkouts
+data/processed/eda_reference_features.csv
+results/batch3_author_quality_rules.csv

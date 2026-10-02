@@ -4,20 +4,20 @@
     "code_cells": 69,
     "errors": 0,
     "stderr_cells": 1,
-    "duration_s": 23.2
+    "duration_s": 22.94
   },
   {
     "file": "notebooks/02_feature_engineering.ipynb",
     "code_cells": 3,
     "errors": 0,
     "stderr_cells": 0,
-    "duration_s": 9.47
+    "duration_s": 7.78
   },
   {
     "file": "notebooks/03_modeling.ipynb",
     "code_cells": 15,
     "errors": 0,
     "stderr_cells": 0,
-    "duration_s": 9.44
+    "duration_s": 9.38
   }
 ]

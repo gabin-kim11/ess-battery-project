@@ -9,7 +9,7 @@
     "modeling_code": 15
   },
   "notebook_errors": 0,
-  "unit_tests_passed": 5,
+  "unit_tests_passed": 7,
   "raw_features_match_DAY1": true,
   "MAPE_independent_recalculation": true,
   "model_JSON_predictions_match": true,
@@ -21,5 +21,50 @@
   "all_four_notebooks_executed_after_portability_edits": true,
   "insight_revision_validation": "docs/validation/insights_validation.json",
   "insight_evidence_rows": 6,
-  "modeling_code_cells": 15
+  "modeling_code_cells": 15,
+  "feature_snapshot": {
+    "rows": 139,
+    "columns": [
+      "cell_id",
+      "batch",
+      "cell_index",
+      "cycle_life",
+      "charging_policy",
+      "summary_cycles",
+      "QD_bad_rows",
+      "tail_median_QD",
+      "eol_near",
+      "curve_valid",
+      "logvar_deltaQ",
+      "min_deltaQ",
+      "mean_deltaQ",
+      "C1",
+      "SOC_switch",
+      "C2",
+      "slope_QD",
+      "current_mean_C",
+      "current_rms_C",
+      "current_cv",
+      "high_current_charge_fraction",
+      "fast_charge_duration_min",
+      "current_cycle_n",
+      "current_unit_ratio_A_per_C",
+      "charge_integral_ratio",
+      "QD_cycle2",
+      "mean_IR",
+      "delta_IR",
+      "mean_Tavg",
+      "mean_Tmax",
+      "mean_chargetime"
+    ],
+    "numeric_significant_digits": 10,
+    "fingerprint_sha256": "ed6175ab6e249c00c642861272de3327bb093f214bd04ca4bfc2b9a8996733c9",
+    "canonicalization": "Rows sorted by cell_id; numeric values represented with 10 significant digits; missing values null; column order retained."
+  },
+  "repository_validation": "docs/validation/repository_validation.json",
+  "duplicate_csv_cleanup": {
+    "reference_features": "replaced by fixed feature_snapshot",
+    "quality_rules": "single canonical CSV in data/processed",
+    "regenerated_retired_files": false
+  }
 }

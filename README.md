@@ -90,7 +90,7 @@ python -m src.finish --results results
 python -m unittest discover -s tests -v
 ```
 
-노트북은 **01_EDA → 02_feature_engineering → 03_modeling** 순서로 읽는다. 01·02 실행에는 [data/README.md](data/README.md)의 원본 MAT 세 파일을 `data/raw/`에 둔다. 원본이 다른 위치면 `ESS_DATA_DIR`로 지정한다. 03은 저장된 피처 CSV로 실행한다. 실행 출력은 세 노트북에 저장했다.
+노트북은 **01_EDA → 02_feature_engineering → 03_modeling** 순서로 읽는다. 01·02 실행에는 [data/README.md](data/README.md)의 원본 MAT 세 파일을 `data/raw/`에 둔다. 원본이 다른 위치면 `ESS_DATA_DIR`로 지정한다. 03은 저장된 피처 CSV로 실행한다. 실행 출력은 세 노트북에 저장했다. 피처 재현 기준은 `docs/validation/analysis_validation.json`의 스키마·수치 지문으로 보존하고, 품질 규칙은 `data/processed` 한 곳에서 관리한다.
 
 ```bash
 python -m src.artifact --input data/processed/cells_and_features.csv --model results/model_artifact.json --output results/inference.csv

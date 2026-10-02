@@ -14,7 +14,7 @@ def author_rules(data_dir):
  flags={37:'channel-46 collection issue',**{i:'author noisy-cell rule after terminal filter' for i in noisy}}
  return pd.DataFrame([{'cell_id':f'b3c{i}','raw_index':i,'last_QD':caps[i],'author_flag':i in flags,'author_rule':flags.get(i,''),'terminal_above_0885':caps[i]>.885,'source':SOURCE} for i in range(n)])
 def quality_sensitivity(pred,rules,out):
- out=Path(out);rules.to_csv(out/'batch3_author_quality_rules.csv',index=False)
+ out=Path(out)
  excluded=set(rules.loc[rules.author_flag|rules.terminal_above_0885,'cell_id'])
  g=pred[pred.batch==3];clean=g[~g.cell_id.isin(excluded)]
  result=pd.DataFrame([{'cohort':label,'n':len(z),'MAPE_pct':z.APE_pct.mean(),'MAE_cycles':z.error_cycles.abs().mean()} for label,z in [('all finite targets',g),('author-rule quality sensitivity, same locked model',clean)]])
