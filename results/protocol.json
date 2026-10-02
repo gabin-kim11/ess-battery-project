@@ -1,0 +1,71 @@
+{
+  "seed": 42,
+  "task": "regression",
+  "target": "recorded cycle_life (cycles)",
+  "feature_cycle_start": 2,
+  "feature_cycle_end": 100,
+  "holdout": "Batch 1 GroupShuffleSplit by charging_policy, test_size=0.2",
+  "cv": "5-fold GroupKFold within development cells only",
+  "primary_selection_metric": "unweighted mean of fold MAPE (%)",
+  "secondary_metrics": [
+    "MAE",
+    "fold MAPE standard deviation",
+    "overprediction"
+  ],
+  "selection_rule": "minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer Ridge to Random Forest within eligible families, then minimum mean within family",
+  "targets": [
+    "raw",
+    "log10"
+  ],
+  "ridge_alpha": [
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0
+  ],
+  "rf_max_depth": [
+    2,
+    4
+  ],
+  "rf_min_samples_leaf": [
+    3,
+    6
+  ],
+  "rf_n_estimators": 200,
+  "feature_sets": {
+    "single": [
+      "logvar_deltaQ"
+    ],
+    "physical": [
+      "logvar_deltaQ",
+      "slope_QD",
+      "delta_IR",
+      "mean_Tavg",
+      "mean_chargetime"
+    ],
+    "policy": [
+      "logvar_deltaQ",
+      "slope_QD",
+      "delta_IR",
+      "mean_Tavg",
+      "mean_chargetime",
+      "C1",
+      "SOC_switch",
+      "C2"
+    ],
+    "current": [
+      "logvar_deltaQ",
+      "slope_QD",
+      "delta_IR",
+      "mean_Tavg",
+      "current_rms_C",
+      "current_cv"
+    ]
+  },
+  "external_evaluation": "selected config only; refit all Batch 1; Batch 2 mandatory, Batch 3 separate",
+  "gap_formula": "literal signed A-B; negative gaps mean an increased MAPE in B",
+  "paper_target_MAPE_pct": 9.1,
+  "prior_access": "Exploratory analysis examined all batches; earlier exploratory scores exist. Current protocol frozen before new external predictions; this is not a pristine unseen test.",
+  "label_quality": "all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter"
+}

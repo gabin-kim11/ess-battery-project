@@ -1,0 +1,76 @@
+{
+  "renderer": "Matplotlib PNG in notebooks and PDF",
+  "grain": "one cell per point; all finite recorded targets",
+  "palette": "single blue root plus neutrals; circle/square and solid/dashed distinguish roles",
+  "batch_rule": "each quantitative chart contains one Batch only",
+  "scatter_limits_cycles": [
+    0,
+    2100
+  ],
+  "signed_error_limits_pct": [
+    -100,
+    100
+  ],
+  "charts": [
+    {
+      "file": "batch1_candidates.png",
+      "family": "bar",
+      "rows": 4,
+      "takeaway": "single Ridge has minimum grouped-CV MAPE; uncertainty limits fine distinctions"
+    },
+    {
+      "file": "batch1_prediction.png",
+      "family": "scatter",
+      "rows": 46,
+      "takeaway": "calibration relative to equality line; label largest relative errors"
+    },
+    {
+      "file": "batch1_errors.png",
+      "family": "scatter",
+      "rows": 46,
+      "takeaway": "positive error delays replacement planning; negative error advances it"
+    },
+    {
+      "file": "batch2_prediction.png",
+      "family": "scatter",
+      "rows": 39,
+      "takeaway": "calibration relative to equality line; label largest relative errors"
+    },
+    {
+      "file": "batch2_errors.png",
+      "family": "scatter",
+      "rows": 39,
+      "takeaway": "positive error delays replacement planning; negative error advances it"
+    },
+    {
+      "file": "batch3_prediction.png",
+      "family": "scatter",
+      "rows": 44,
+      "takeaway": "calibration relative to equality line; label largest relative errors"
+    },
+    {
+      "file": "batch3_errors.png",
+      "family": "scatter",
+      "rows": 44,
+      "takeaway": "positive error delays replacement planning; negative error advances it"
+    },
+    {
+      "file": "batch1_signal_mapping.png",
+      "family": "scatter",
+      "rows": 46,
+      "takeaway": "input range membership does not guarantee transfer of signal-to-lifetime calibration"
+    },
+    {
+      "file": "batch2_signal_mapping.png",
+      "family": "scatter",
+      "rows": 39,
+      "takeaway": "input range membership does not guarantee transfer of signal-to-lifetime calibration"
+    },
+    {
+      "file": "batch3_signal_mapping.png",
+      "family": "scatter",
+      "rows": 44,
+      "takeaway": "input range membership does not guarantee transfer of signal-to-lifetime calibration"
+    }
+  ]
+}

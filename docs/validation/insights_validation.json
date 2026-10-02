@@ -1,0 +1,36 @@
+{
+  "validation_date": "2026-10-02",
+  "evidence_rows": 6,
+  "independent_recomputation": true,
+  "batch2_input_inrange": {
+    "n": 28,
+    "total": 39,
+    "MAPE_pct": 34.90451091581558
+  },
+  "batch_centered_correlations": {
+    "QD_cycle2": -0.012825590467840924,
+    "logvar_deltaQ": -0.7730897025494533
+  },
+  "scientific_CSVs_compared": 23,
+  "model_selection_and_metrics_unchanged": true,
+  "scientific_snapshots_preserved": true,
+  "notebook_code_cells": {
+    "EDA": 69,
+    "features": 3,
+    "modeling": 15,
+    "combined": 84
+  },
+  "cell_errors": 0,
+  "unit_tests_passed": 5,
+  "pdf_pages": 12,
+  "pdf_charts": 10,
+  "pdf_all_pages_rendered_and_reviewed": true,
+  "pdf_text_bounds_passed": true,
+  "same_runtime_location_independence": true,
+  "interpretation_constraints": [
+    "Observation is distinct from causation and field impact.",
+    "Lifetime strata are post-hoc diagnostics, not deployment inputs.",
+    "Input in-range does not cover all Batch 2 cells.",
+    "M2 variance reduction does not imply statistical significance."
+  ]
+}

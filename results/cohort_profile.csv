@@ -1,0 +1,4 @@
+batch,raw_n,scored_n,missing_target_n,life_min,life_max,life_median,below_500_n,over_1000_n,policy_n,new_policy_n,EOL_near_n,IR_missing_n
+1,46,46,0,534.0,1227.0,858.5,0,10,23,0,33,0
+2,47,39,8,392.0,1186.0,472.0,28,3,12,32,39,6
+3,46,44,2,541.0,1935.0,1005.5,0,23,8,44,44,0

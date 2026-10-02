@@ -1,0 +1,16 @@
+{
+  "unique_cells": true,
+  "holdout_policy_overlap": 0,
+  "CV_policy_overlap": 0,
+  "feature_cycle_max": 100,
+  "future_metadata_in_input": false,
+  "cohort_counts": {
+    "1": 46,
+    "2": 39,
+    "3": 44
+  },
+  "candidate_configs": 65,
+  "CV_fits": 325,
+  "selected_before_external_prediction": true,
+  "evaluation_scope": "conditional external validation after prior all-batch EDA, not pristine untouched external validation"
+}

@@ -1,0 +1,61 @@
+{
+  "validation_date": "2026-10-02",
+  "relocated_project": "ESS_Battery_Project",
+  "environment": "Python 3.11.15",
+  "kernel": "python3, local TCP communication",
+  "notebooks": [
+    {
+      "file": "notebooks/01_EDA.ipynb",
+      "code_cells": 69,
+      "errors": 0,
+      "stderr_cells": 1,
+      "duration_s": 21.05,
+      "working_directory": "notebooks/",
+      "root_path_overrides": false,
+      "raw_path_override": false,
+      "default_output_within_project": true
+    },
+    {
+      "file": "notebooks/02_feature_engineering.ipynb",
+      "code_cells": 3,
+      "errors": 0,
+      "stderr_cells": 0,
+      "duration_s": 7.18,
+      "working_directory": "notebooks/",
+      "root_path_overrides": false,
+      "raw_path_override": false,
+      "default_output_within_project": true
+    },
+    {
+      "file": "notebooks/03_modeling.ipynb",
+      "code_cells": 15,
+      "errors": 0,
+      "stderr_cells": 0,
+      "duration_s": 9.02,
+      "working_directory": "notebooks/",
+      "root_path_overrides": false,
+      "raw_path_override": false,
+      "default_output_within_project": true
+    },
+    {
+      "file": "30-ESSHealth-scratch.ipynb",
+      "code_cells": 84,
+      "errors": 0,
+      "stderr_cells": 0,
+      "duration_s": 20.12,
+      "working_directory": ".",
+      "root_path_overrides": false,
+      "raw_path_override": false,
+      "default_output_within_project": true
+    }
+  ],
+  "CLI_train_finish_tests": "passed",
+  "unit_tests_passed": 5,
+  "feature_values_unchanged": true,
+  "performance_values_unchanged": true,
+  "MAPE_independently_recomputed": true,
+  "holdout_policy_overlap": 0,
+  "kernel_shutdown_note": "Cell errors are recorded separately from sandbox process-enumeration messages at shutdown.",
+  "remaining_user_input": [],
+  "publication_status": "Local package prepared; no GitHub or Slack publication"
+}

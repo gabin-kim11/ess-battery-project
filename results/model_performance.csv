@@ -1,0 +1,10 @@
+구분,MAPE (%) 또는 Gap (%p),unit,비고
+Train (Batch 1 CV),7.1154183510654345,%,폴드 MAPE 단순 평균
+Valid (Batch 1 Hold-out),12.721933012703104,%,정책 단위 Hold-out
+Test (Batch 2),32.346748844624756,%,고정 모델 최종 평가
+Gap (Train-Valid),-5.60651466163767,%p,Train - Valid; 음수는 Valid 오차 증가
+Gap (Valid-Test),-19.62481583192165,%p,Valid - Batch 2; 음수는 외부 오차 증가
+Gap (Target-Test),-23.246748844624754,%p,9.1 - Batch 2; 음수는 논문 기준 미달
+Test (Batch 3),12.735665374786562,%,별도 추가 검증
+Gap (Batch2-Batch3),19.611083469838192,%p,Batch 2 - Batch 3
+"Gap (Target-Test, Batch 3)",-3.635665374786562,%p,9.1 - Batch 3

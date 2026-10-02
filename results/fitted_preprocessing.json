@@ -1,0 +1,14 @@
+{
+  "features": [
+    "logvar_deltaQ"
+  ],
+  "imputer_statistics": [
+    -3.8507251667583704
+  ],
+  "scaler_mean": [
+    -3.92299593426468
+  ],
+  "scaler_scale": [
+    0.37413842493158855
+  ]
+}

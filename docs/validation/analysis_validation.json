@@ -1,0 +1,25 @@
+{
+  "completed_date": "2026-10-02",
+  "PDF_pages": 12,
+  "PDF_visual_review": "all 12 final pages rendered with Poppler and inspected; no text bounds overflow",
+  "Batch_charts": 10,
+  "notebook_cells": {
+    "EDA_code": 69,
+    "feature_engineering_code": 3,
+    "modeling_code": 15
+  },
+  "notebook_errors": 0,
+  "unit_tests_passed": 5,
+  "raw_features_match_DAY1": true,
+  "MAPE_independent_recalculation": true,
+  "model_JSON_predictions_match": true,
+  "source_features_sha256": "b883c3a1d90a45a49a287f7e74aa76a8bdf708c6f35e0701472ae4416d4317be",
+  "external_evaluation": "fixed configuration applied to Batch 2/3; repeated executions reproduce same scores without score-driven revisions",
+  "kernel_shutdown_note": "Notebook cells complete without errors/stderr. Sandbox blocks psutil process enumeration at kernel shutdown; a failed IPC-start attempt did not execute analysis cells.",
+  "portability_validation": "docs/validation/location_validation.json",
+  "review_status": "Analysis content and local execution verified; publication status recorded separately.",
+  "all_four_notebooks_executed_after_portability_edits": true,
+  "insight_revision_validation": "docs/validation/insights_validation.json",
+  "insight_evidence_rows": 6,
+  "modeling_code_cells": 15
+}

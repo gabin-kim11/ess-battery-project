@@ -1,0 +1,18 @@
+# Python and notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+.ipython/
+.mplconfig/
+# Large raw experimental data and local outputs
+data/raw/*
+!data/raw/.gitkeep
+*.mat
+results/eda/
+*.backup-before-*.ipynb
+# Local credentials and operating-system files
+.env
+.env.*
+!.env.example
+.DS_Store

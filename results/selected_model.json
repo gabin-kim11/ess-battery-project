@@ -1,0 +1,19 @@
+{
+  "spec": {
+    "spec_id": "S003",
+    "candidate": "M1",
+    "family": "ridge",
+    "features": "single",
+    "target": "raw",
+    "alpha": 1.0
+  },
+  "features": [
+    "logvar_deltaQ"
+  ],
+  "best_CV_MAPE_pct": 7.1154183510654345,
+  "one_SE_threshold_pct": 8.456531305471419,
+  "selected_CV_MAPE_pct": 7.1154183510654345,
+  "selected_CV_sd": 2.998819731557356,
+  "selection_basis": "Batch 1 development CV only",
+  "lock_stage": "before Hold-out and Batch 2/3 predictions"
+}

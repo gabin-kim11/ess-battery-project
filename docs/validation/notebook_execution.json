@@ -1,0 +1,23 @@
+[
+  {
+    "file": "notebooks/01_EDA.ipynb",
+    "code_cells": 69,
+    "errors": 0,
+    "stderr_cells": 1,
+    "duration_s": 23.2
+  },
+  {
+    "file": "notebooks/02_feature_engineering.ipynb",
+    "code_cells": 3,
+    "errors": 0,
+    "stderr_cells": 0,
+    "duration_s": 9.47
+  },
+  {
+    "file": "notebooks/03_modeling.ipynb",
+    "code_cells": 15,
+    "errors": 0,
+    "stderr_cells": 0,
+    "duration_s": 9.44
+  }
+]
