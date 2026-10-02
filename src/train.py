@@ -11,6 +11,8 @@ PROTOCOL={'seed':SEED,'task':'regression','target':'recorded cycle_life (cycles)
  'holdout':'Batch 1 GroupShuffleSplit by charging_policy, test_size=0.2',
  'cv':'5-fold GroupKFold within development cells only',
  'primary_selection_metric':'unweighted mean of fold MAPE (%)',
+ 'metric_rationale':'MAPE chosen for relative error across lifetime scales; design-stage MAE retained for absolute-cycle interpretation',
+ 'feature_screening_basis':'logvar_deltaQ represents correlated Delta-Q summaries; min_deltaQ remains a separate development hypothesis',
  'secondary_metrics':['MAE','fold MAPE standard deviation','overprediction'],
  'selection_rule':'minimum CV MAPE; eligible = mean <= best mean + best fold SD/sqrt(5); prefer Ridge to Random Forest within eligible families, then minimum mean within family',
  'targets':['raw','log10'],'ridge_alpha':[.01,.1,1.,10.,100.],

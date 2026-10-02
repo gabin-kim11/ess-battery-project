@@ -21,8 +21,8 @@
       "file": "notebooks/03_modeling.ipynb",
       "code_cells": 15,
       "errors": 0,
-      "stderr_cells": 0,
-      "duration_s": 9.38
+      "stderr_cells": 1,
+      "duration_s": 17.59
     }
   ],
   "notebook_errors": 0,
@@ -61,8 +61,24 @@
     "results/split_manifest.csv",
     "results/worst_cells.csv"
   ],
-  "report_PDF_bytes_unchanged": true,
+  "report_PDF_bytes_unchanged": false,
   "original_feature_CSV_bytes_unchanged": true,
   "feature_snapshot_check": "passed for raw extraction and CSV reload",
-  "feature_snapshot_negative_tests": "changed value and missing row rejected; row reordering accepted"
+  "feature_snapshot_negative_tests": "changed value and missing row rejected; row reordering accepted",
+  "development_revision": {
+    "scope": "development narrative, notebook and README; EDA/design source preserved",
+    "modeling_code_cells": 15,
+    "cell_errors": 0,
+    "tests": 7,
+    "scientific_csvs_compared": 22,
+    "scientific_values_unchanged": true,
+    "EDA_design_and_feature_notebooks_bytes_unchanged": true,
+    "EDA_design_PDF_bytes_unchanged": true,
+    "chart_bytes_unchanged": true,
+    "selection_rationale": "MAPE primary, MAE absolute-cycle interpretation; min_deltaQ separate development candidate",
+    "PDF_pages": 12,
+    "PDF_visual_and_text_bounds": "passed all 12 pages",
+    "README_lines": 151,
+    "stderr_note": "Matplotlib font-cache initialization only"
+  }
 }

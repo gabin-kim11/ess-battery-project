@@ -67,5 +67,7 @@
   "gap_formula": "literal signed A-B; negative gaps mean an increased MAPE in B",
   "paper_target_MAPE_pct": 9.1,
   "prior_access": "Exploratory analysis examined all batches; earlier exploratory scores exist. Current protocol frozen before new external predictions; this is not a pristine unseen test.",
-  "label_quality": "all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter"
+  "label_quality": "all finite cycle_life > 100; terminal capacity metadata used in diagnostics only, no future-based training filter",
+  "metric_rationale": "MAPE chosen for relative error across lifetime scales; design-stage MAE retained for absolute-cycle interpretation",
+  "feature_screening_basis": "logvar_deltaQ represents correlated Delta-Q summaries; min_deltaQ remains a separate development hypothesis"
 }

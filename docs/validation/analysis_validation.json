@@ -1,7 +1,7 @@
 {
   "completed_date": "2026-10-02",
   "PDF_pages": 12,
-  "PDF_visual_review": "all 12 final pages rendered with Poppler and inspected; no text bounds overflow",
+  "PDF_visual_review": "all 12 final pages rendered with Poppler and inspected after development narrative revision; text bounds pass",
   "Batch_charts": 10,
   "notebook_cells": {
     "EDA_code": 69,
@@ -15,7 +15,7 @@
   "model_JSON_predictions_match": true,
   "source_features_sha256": "b883c3a1d90a45a49a287f7e74aa76a8bdf708c6f35e0701472ae4416d4317be",
   "external_evaluation": "fixed configuration applied to Batch 2/3; repeated executions reproduce same scores without score-driven revisions",
-  "kernel_shutdown_note": "Notebook cells complete without errors/stderr. Sandbox blocks psutil process enumeration at kernel shutdown; a failed IPC-start attempt did not execute analysis cells.",
+  "kernel_shutdown_note": "Notebook cell errors: 0. Latest modeling rerun has one Matplotlib font-cache initialization message; sandbox process-enumeration warning occurs separately at kernel shutdown.",
   "portability_validation": "docs/validation/location_validation.json",
   "review_status": "Analysis content and local execution verified; publication status recorded separately.",
   "all_four_notebooks_executed_after_portability_edits": true,
@@ -66,5 +66,12 @@
     "reference_features": "replaced by fixed feature_snapshot",
     "quality_rules": "single canonical CSV in data/processed",
     "regenerated_retired_files": false
+  },
+  "development_narrative_revision": {
+    "selection_metric_transition_explained": true,
+    "deltaQ_representative_feature_and_deferred_candidate_explained": true,
+    "README_lines": 151,
+    "model_and_scores_unchanged": true,
+    "EDA_design_unchanged": true
   }
 }

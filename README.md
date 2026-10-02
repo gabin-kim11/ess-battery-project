@@ -27,42 +27,20 @@
 
 ```text
 ess-battery-project/
-├── data/
-│   ├── README.md                  # 원본 제공처·피처 정의
-│   ├── raw/                       # 내려받은 MAT의 로컬 위치
-│   └── processed/                 # 재현용 피처·품질·원본 목록
+├── data/                        # 원본 안내·초기 피처·품질 기록
 ├── notebooks/
-│   ├── 01_EDA.ipynb               # Batch별 탐색·해석·설계
-│   ├── 02_feature_engineering.ipynb # 원본 피처 추출·일치 검증
-│   └── 03_modeling.ipynb          # 후보 선택·평가·시사점 재계산
-├── src/
-│   ├── features.py                # 원본 MAT → 초기 피처
-│   ├── preprocess.py              # 정책 분할·폴드 내 전처리
-│   ├── train.py                   # 후보 선택·고정·외부 평가
-│   ├── diagnostics.py             # 수명 영역·배치별 오류
-│   ├── quality.py                 # 품질 규칙·민감도
-│   ├── visualize.py               # Batch별 독립 그림
-│   ├── insights.py                # 근거 → 해석 → 의사결정
-│   ├── artifact.py                # 학습 모델 저장·추론
-│   └── finish.py                  # 그림·진단·시사점·모델 생성
+│   ├── 01_EDA.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   └── 03_modeling.ipynb
+├── src/                         # 피처·전처리·학습·오류·시사점
 ├── results/
-│   ├── README.md                  # 결과 파일별 읽는 목적
-│   ├── model_performance.csv      # 주 성능·Gap
-│   ├── cell_predictions.csv       # 셀별 예측·오차
-│   ├── insight_evidence.csv       # 여섯 시사점의 근거·조건
-│   ├── model_artifact.json        # 학습한 Ridge·전처리 값
-│   └── charts/                    # Batch별 예측·오차·신호 대응
-├── reports/
-│   ├── eda_and_model_strategy.pdf
-│   ├── model_development_evaluation.pdf
-│   ├── build_report.py            # 개발·검증 보고서 재생성
-│   └── assets/                    # 폰트·배포 라이선스
-├── docs/
-│   ├── insights.md                # 발견과 운영 판단
-│   ├── methodology.md             # 방법·해석 조건·재현
-│   └── validation/                # 실행·검산 기록
+│   ├── model_performance.csv    # 주 성능·Gap
+│   ├── cell_predictions.csv     # 셀별 예측·오차
+│   ├── insight_evidence.csv     # 시사점의 근거·해석 조건
+│   └── charts/                 # Batch별 독립 그림
+├── reports/                     # 분석 설계·개발 평가 PDF
+├── docs/                        # 상세 시사점·방법·검증 기록
 ├── tests/test_pipeline.py
-├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
@@ -92,11 +70,7 @@ python -m unittest discover -s tests -v
 
 노트북은 **01_EDA → 02_feature_engineering → 03_modeling** 순서로 읽는다. 01·02 실행에는 [data/README.md](data/README.md)의 원본 MAT 세 파일을 `data/raw/`에 둔다. 원본이 다른 위치면 `ESS_DATA_DIR`로 지정한다. 03은 저장된 피처 CSV로 실행한다. 실행 출력은 세 노트북에 저장했다. 피처 재현 기준은 `docs/validation/analysis_validation.json`의 스키마·수치 지문으로 보존하고, 품질 규칙은 `data/processed` 한 곳에서 관리한다.
 
-```bash
-python -m src.artifact --input data/processed/cells_and_features.csv --model results/model_artifact.json --output results/inference.csv
-python -m src.insights --root . --results results
-python reports/build_report.py
-```
+추론·시사점 표·보고서 재생성은 [상세 실행 안내](docs/methodology.md#결과-확인과-보고서-재생성)를 따른다.
 
 ## EDA
 
@@ -116,6 +90,8 @@ python reports/build_report.py
 
 ΔQ는 실제 Vdlin 전압 축(2–3.5V)에 정렬한 Q100−Q10의 표본분산(ddof=1)을 log10 변환한다. 원본 I는 C-rate, t는 분이다. 종료 용량·knee·전체 관측 길이는 후반 진단으로 구분한다.
 
+ΔQ 최솟값은 로그 분산과 중복이 높아 추가 개발 검증 후보로 남겼다. 이번 비교는 대표 ΔQ 신호에 측정 역할이 다른 입력을 더하는 방식이다.
+
 물리 5피처는 `logvar_deltaQ`, `slope_QD`, `delta_IR`, `mean_Tavg`, `mean_chargetime`이다. 정책 묶음은 `C1/SOC_switch/C2`를 추가하고, 전류 묶음은 충전 시간을 `current_rms_C/current_cv`로 대체한다.
 
 ### 후보 모델과 선택 근거
@@ -129,7 +105,7 @@ python reports/build_report.py
 
 Batch 1 정책 단위 Hold-out으로 개발 35셀·18정책과 검증 11셀·5정책을 분리한다. 개발 집단의 5-fold GroupKFold에서 65설정을 비교한다. 매 폴드의 결측 대체·표준화는 학습 집단에서 적합한다.
 
-최소 평균 MAPE를 찾고 best 평균+SD/√5 범위에서 Ridge를 우선한다. 같은 계열에서는 최소 평균을 선택한다. **M1 단일 Ridge를 최종 고정**했다. M2의 평균 개선은 관찰되지 않았지만 낮은 변동성은 추가 표본에서 재검토할 근거다. one-SE는 복잡도 제어 규칙이며 통계적 동등성 검정이 아니다.
+모델 선택은 수명 규모별 상대 오차를 비교하는 MAPE를 주 지표로 확정했다. 설계에서 검토한 MAE는 사이클 단위 오차를 해석하는 보조 지표로 유지했다. 최소 평균 MAPE를 찾고 best 평균+SD/√5 범위에서 Ridge를 우선한다. 같은 계열에서는 최소 평균을 선택한다. **M1 단일 Ridge를 최종 고정**했다. M2의 평균 개선은 관찰되지 않았지만 낮은 변동성은 추가 표본에서 재검토할 근거다. one-SE는 복잡도 제어 규칙이며 통계적 동등성 검정이 아니다.
 
 고정 설정으로 Hold-out 평가 후 전체 Batch 1 46셀에서 재학습해 Batch 2·3을 평가한다. 외부 점수는 후보 선택에 되돌려 사용하지 않는다.
 
